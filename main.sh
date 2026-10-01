@@ -1,35 +1,34 @@
 #!/bin/bash
+source .env
 source quit.sh
+source help.sh
 
-help() {
-  echo "quit - Quitter le prompt"
-  echo "ls - Liste fichiers et dossiers, visibles comme cachés"
-  echo "help Liste les commandes disponibles"
-  echo "rm - Supprime un fichier"
-  echo "rmdir - Supprime un dossier"
-  echo "about - Description de votre programme"
-  echo "version - Affiche la version du prompt"
-  echo "âge - Demande votre âge : majeur ou mineur ?"
-  echo "profil - Prénom, nom, âge et email"
-  echo "passw - Change le mot de passe, avec confirmation"
-  echo "cd - Va dans un dossier créé ou revient au précédent"
-  echo "pwd - Affiche le répertoire courant"
-  echo "hour - Donne l'heure actuelle"
-  echo "* - Signale une commande inconnue"
-  echo "httpget - Télécharge le HTML d'une page ; demande le nom du fichier"
-  echo "smtp - Envoie un mail : adresse, sujet, corps"
-  echo "open - Ouvre un fichier dans VIM, même s'il n'existe pas"
-}
+# Vérifier si le fichier .env existe
+if [ -f .env ]; then
+    # Lire ligne par ligne, ignorer les espaces (IFS=) et garder le texte brut (-r)
+    while IFS= read -r line || [ -n "$line" ]; do
+        # 1. Ignorer les lignes vides
+        # 2. Ignorer les commentaires commençant par #
+        if [[ ! -z "$line" && ! "$line" =~ ^# ]]; then
+            # Exporter la variable
+            export "$line"
+        fi
+    done < .env
+else
+    echo "Erreur : Le fichier .env est introuvable."
+    exit 1
+fi
+
 
 verify() {
   echo "Identifiant :"
   read Identifiant
-  if [ $Identifiant != "Xzen" ]; then
+  if [ $Identifiant != $Username ]; then
     quit
     else echo "Mot de passe"
     fi
   read -s Mot_de_passe
-  if [ $Mot_de_passe != "12345" ]; then
+  if [ $Mot_de_passe != $Password ]; then
   quit
   else echo "Accès Autorisé ! Bienvenue sur votre session Maître ! ♡"
   fi
